@@ -1,8 +1,10 @@
 package excercises;
 
-import javaslang.collection.List;
-
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class Chapter1 {
     /**
@@ -22,6 +24,43 @@ public class Chapter1 {
             System.out.println(dir);
             ex2Node(dir);
 
+        }
+    }
+
+    public void ex4() {
+        final String base = "/Users/hrafnkellpalsson/Downloads";
+        File[] files = new File[9]; 
+        files[0] = new File(base + "/what");
+        files[1] = new File(base + "/what/romans.txt");
+        files[2] = new File(base + "/what/greek.txt");
+        files[3] = new File(base + "/what/who");
+        files[4] = new File(base + "/what/who/pericles.txt");
+        files[5] = new File(base + "/what/who/cato.txt");
+        files[6] = new File(base + "/what/when");
+        files[7] = new File(base + "/what/when/BCE.txt");
+        files[8] = new File(base + "/what/when/CE.txt");
+
+        // We could have converted the array to a list and used the sort() method defined on the list interface.
+        // List<File> fs = Arrays.asList(files);
+
+        Arrays.sort(files, (f1, f2) -> {
+            if (f1.isDirectory() && f2.isDirectory()) {
+                return f1.compareTo(f2);
+            }
+
+            if (f1.isDirectory()) {
+                return -1;
+            }
+
+            if (f2.isDirectory()) {
+                return 1;
+            }
+
+            return f1.compareTo(f2);
+        });
+
+        for (File f : files) {
+            System.out.println(f);
         }
     }
 }
