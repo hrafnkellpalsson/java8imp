@@ -1,0 +1,29 @@
+group 'com.palsson.java8imp'
+version '1.0'
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '2.11'
+  distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+}
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.immutables', name: 'immutables', version: '2.1.12'
+    compile group: 'com.javaslang', name: 'javaslang', version: '2.0.0-RC4'
+    testCompile group: 'org.testng', name: 'testng', version: '6.9.10'
+}
+
+task homeDir << {
+    println gradle.gradleHomeDir
+}
+
+task showCache << {
+    configurations.compile.each { println it }
+}
