@@ -1,14 +1,11 @@
 package excercises;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Chapter1 {
     /**
-     * Using the listFiles(FileFilter) and isDirectory methods of the java.io.File class, write a method that returns
+     * Using the listFiles(FileFilter) and isDirectory methods of the java.io.File class, meth a method that returns
      * all subdirectories of a given directory. Use a lambda expression instead of a FileFilter object. Repeat with a
      * method reference.
      */
@@ -23,7 +20,6 @@ public class Chapter1 {
         for (File dir : dirs) {
             System.out.println(dir);
             ex2Node(dir);
-
         }
     }
 
@@ -62,5 +58,14 @@ public class Chapter1 {
         for (File f : files) {
             System.out.println(f);
         }
+    }
+
+    public void ex9() {
+        Collection2<String> li = new ArrayList2<>();
+        li.add("Basketball");
+        li.add("Baseball");
+        li.add("Football");
+
+        li.forEachIf(System.out::println, e -> e.startsWith("B"));
     }
 }
