@@ -8,7 +8,7 @@ public class OuterClassTest {
         OuterClass oc = new OuterClass();
         OuterClass.Clazz Clazz;
         Clazz = oc.ClazzFactory(); // We can access the inner class through a factory method...
-        Clazz = oc.new Clazz(); // ...or using this special new syntax.
+        Clazz = oc.new Clazz(); // ...or using this special new syntax. J. Bloch paraphrased: This way is rare.
         Clazz.meth();
     }
 
