@@ -1,14 +1,16 @@
 package excercises;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.*;
+import java.util.stream.*;
 
 public class Chapter2 {
     /**
@@ -70,6 +72,191 @@ public class Chapter2 {
      * int instead?
      */
     public void ex4() {
-        
+        int[] values = { 1, 4 , 9, 16 };
+        Stream<Object> objStream = Stream.of(values);
+        IntStream intStream = IntStream.of(values); // Naturally IntStream is not a generic interface, since if applies only to ints!
+
+    }
+
+    /**
+     * Using Stream.iterate, make an infinite stream of random numbers - not by calling Math.random but by directly
+     * implementing a linear congruential generator...
+     */
+    public void ex5() {
+        long seed = 8;
+        long a = 25214903917L;
+        long c = 11;
+        long m = 2^48;
+        Stream<Long> stream = LongStream.iterate(seed, x -> (a*x+c)%m).boxed();
+        stream.limit(5).forEach(System.out::println);
+    }
+
+    /**
+     * The characterStream method in Section 2.3 on page 25 was a bit clumsy. Write a stream-based one-liner instead.
+     */
+    public void ex6() {
+        String s = "drumpf";
+        Stream<Character> stream;
+
+        // Clumsy implementation from book.
+        List<Character> result = new ArrayList<>();
+        for (char c : s.toCharArray()) {
+            result.add(c);
+        }
+        stream = result.stream();
+        stream.forEach(System.out::println);
+
+        // Better implementation.
+        stream = IntStream.range(0, s.length()-1).map(s::charAt).mapToObj(c -> (char) c);
+        stream.forEach(System.out::println);
+        // Even better
+        stream = s.chars().mapToObj(c -> (char)c);
+        stream.forEach(System.out::println);
+    }
+
+    /**
+     * Your manager asks you to write a method public static <T> boolean isFinite(Steam<T> stream). Why isn't that
+     * such a good idea? Go ahead and write in anyway.
+     */
+    public void ex7() {
+        // This is not a good idea because the method will never return if the stream is infinite.
+        boolean isFinite = isFinite(Stream.generate(() -> "a"));
+    }
+
+    public static <T> boolean isFinite(Stream<T> stream) {
+        stream.count();
+        return true;
+    }
+
+    /**
+     * Write a method public static <T> Stream<T> zip(Stream<T> first, Stream<T> second) that alternates elements from
+     * the stream first and second, stopping when one of them runs out of elements.
+     */
+    public void ex8() {
+        // If we allow one or both streams to be infinite this seems to be somewhat involved.
+        // We could copy implementation from potonpack library, see http://stackoverflow.com/a/25668784/1728563
+    }
+
+    /**
+     * Join all elements in a Stream<ArrayList<T>> to one ArrayList<T>. Show how to do this with the three forms of
+     * reduce.
+     */
+    public void ex9_1() {
+        // Let's first try a simple non generic implementation.
+        ArrayList<LocalDate> janDates = IntStream.range(1, 3)
+                .mapToObj(i -> LocalDate.of(2016, Month.JANUARY, i))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        ArrayList<LocalDate> febDates = IntStream.range(1, 3)
+                .mapToObj(i -> LocalDate.of(2016, Month.FEBRUARY, i))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        ArrayList<LocalDate> marDates = IntStream.range(1, 3)
+                .mapToObj(i -> LocalDate.of(2016, Month.MARCH, i))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        // Solution 1
+        Stream<ArrayList<LocalDate>> streamDates1 = Stream.of(janDates, febDates, marDates);
+        ArrayList<LocalDate> listDates1 = streamDates1
+                .reduce((x, y) -> {
+                    x.addAll(y);
+                    return x;
+                })
+                .orElse(new ArrayList<>(Collections.emptyList()));
+        // System.out.println("Solution 1");
+        // listDates1.forEach(System.out::println);
+
+        // Solution 2 - Use an identity so we don't need to deal with Optional
+        Stream<ArrayList<LocalDate>> streamDates2 = Stream.of(janDates, febDates, marDates);
+        ArrayList<LocalDate> listDates2 = streamDates2
+                .reduce(new ArrayList<>(Collections.emptyList()), (x, y) -> {
+                    x.addAll(y);
+                    return x;
+                });
+        System.out.println("Solution 2");
+        listDates2.forEach(System.out::println);
+
+        // Solution 3 - The combiner function isn't needed here because the argument types are the same as the result
+        // types. But we can use it nevertheless.
+        Stream<ArrayList<LocalDate>> streamDates3 = Stream.of(janDates, febDates, marDates);
+        ArrayList<LocalDate> listDates3 = streamDates3
+                .reduce(new ArrayList<>(Collections.emptyList()), (x, y) -> {
+                    x.addAll(y);
+                    return x;
+                }, (z, w) -> {
+                    z.addAll(w);
+                    return z;
+                });
+        // System.out.println("Solution 3");
+        // listDates3.forEach(System.out::println);
+    }
+
+    // Now let's do the generic version, using only the best way, i.e. Solution 2, from the simplified example above.
+    public <T> ArrayList<T> ex9_2(Stream<ArrayList<T>> stream) {
+        return stream.reduce(new ArrayList<>(Collections.emptyList()), (x, y) -> {
+            x.addAll(y);
+            return x;
+        });
+    }
+
+    // TODO We could try more stuff here, such as not using an immutable Averager.
+    // The solution was stolen from here http://stackoverflow.com/questions/23658956/finding-average-using-reduce-and-collect
+    /**
+     * Write a call to reduce that can be used to compute the average of a Stream<Double>. Why can't you simply compute
+     * the sum and divide by count()?
+     */
+    public void ex10() {
+        // Firstly, remember that for a DoubleStream there is an average() method, but that method is only available for
+        // primitive streams (as are sum(), max(), min() and summaryStatistics()).
+
+        // So we could cheat and not use reduce()
+        Stream<Double> stream1 = DoubleStream.of(1, 2, 3, 4, 5).boxed();
+//        DoubleStream dStream  = stream1.mapToDouble(d -> d);
+//        OptionalDouble optAv = dStream.average();
+        // Or as a one liner with an identity
+        Double av1 = stream1.mapToDouble(d -> d).average().orElse(0);
+        System.out.println("Cheating: " + av1);
+
+        // Now no cheating, let's use reduce() as requested.
+        // We can't simply compute the sum and divide by count() because we can't consume the stream twice.
+        Stream<Double> stream2 = DoubleStream.of(1, 2, 3, 4, 5).boxed();
+        double av2 = stream2.reduce(new ImmutableAverager(0D, 0), ImmutableAverager::accumulator, ImmutableAverager::combiner)
+            .average();
+        System.out.println("Not cheating: " + av2);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
