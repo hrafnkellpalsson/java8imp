@@ -15,8 +15,11 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.immutables', name: 'immutables', version: '2.1.12'
-    compile group: 'com.javaslang', name: 'javaslang', version: '2.0.0-RC4'
+    compile (
+        [group: 'org.immutables', name: 'immutables', version: '2.1.14'],
+        [group: 'com.javaslang', name: 'javaslang', version: '2.0.0-RC4'],
+        [group: 'org.glassfish.jersey.core', name: 'jersey-client', version: '2.22.2']
+    )
     testCompile group: 'org.testng', name: 'testng', version: '6.9.10'
 }
 

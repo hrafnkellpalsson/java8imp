@@ -1,7 +1,5 @@
 package excercises;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -219,6 +217,8 @@ public class Chapter2 {
 
         // Now no cheating, let's use reduce() as requested.
         // We can't simply compute the sum and divide by count() because we can't consume the stream twice.
+        // Note that the reduce we apply here is a terminal operation in the sense that the reduced stream gets reduced
+        // to a single value, but nevertheless it's not the last operation in our calculations.
         Stream<Double> stream2 = DoubleStream.of(1, 2, 3, 4, 5).boxed();
         double av2 = stream2.reduce(new ImmutableAverager(0D, 0), ImmutableAverager::accumulator, ImmutableAverager::combiner)
             .average();
