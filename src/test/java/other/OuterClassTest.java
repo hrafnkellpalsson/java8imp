@@ -29,7 +29,7 @@ public class OuterClassTest {
         //Clazz.meth();
     }
 
-    // Obviously can't get a hold of the method local class here, because it's only available in the method that
+    // Obviously can't getSync a hold of the method local class here, because it's only available in the method that
     // defines it.
     @Test
     public void testMethodLocal() {
