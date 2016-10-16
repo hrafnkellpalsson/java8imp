@@ -73,7 +73,6 @@ public class Chapter2 {
         int[] values = { 1, 4 , 9, 16 };
         Stream<Object> objStream = Stream.of(values);
         IntStream intStream = IntStream.of(values); // Naturally IntStream is not a generic interface, since if applies only to ints!
-
     }
 
     /**

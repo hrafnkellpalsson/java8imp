@@ -2,24 +2,35 @@ package excercises;
 
 import java.io.File;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 public class Chapter1 {
+    // We can make a recursive lambda function, compiler complains about go not being found in method ex2()
+//    private Consumer<File> go = f -> {
+//        File[] dirs = f.listFiles(File::isDirectory);
+//        for (File dir : dirs) {
+//            System.out.println(dir);
+//            this.go.accept(dir);
+//        }
+//    };
+
     /**
-     * Using the listFiles(FileFilter) and isDirectory methods of the java.io.File class, meth a method that returns
+     * Using the listFiles(FileFilter) and isDirectory methods of the java.io.File class, write a method that returns
      * all subdirectories of a given directory. Use a lambda expression instead of a FileFilter object. Repeat with a
      * method reference.
      */
     public void ex2() {
         File file = new File("/Users/hrafnkellpalsson/Downloads");
-        ex2Node(file);
+        go(file);
     }
 
-    public void ex2Node(File file) {
+    public void go(File file) {
 //        File[] dirs = file.listFiles(f -> f.isDirectory());
         File[] dirs = file.listFiles(File::isDirectory);
         for (File dir : dirs) {
             System.out.println(dir);
-            ex2Node(dir);
+            go(dir);
         }
     }
 
@@ -43,7 +54,7 @@ public class Chapter1 {
         // We could have converted the array to a list and used the sort() method defined on the list interface.
         // List<File> fs = Arrays.asList(files);
 
-        Arrays.sort(files, (f1, f2) -> {
+        Comparator<? super File> comparator = (f1, f2) -> {
             if (f1.isDirectory() && f2.isDirectory()) {
                 return f1.compareTo(f2);
             }
@@ -57,7 +68,9 @@ public class Chapter1 {
             }
 
             return f1.compareTo(f2);
-        });
+        };
+
+        Arrays.sort(files, comparator);
 
         for (File f : files) {
             System.out.println(f);

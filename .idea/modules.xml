@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/java8imp.iml" filepath="$PROJECT_DIR$/java8imp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java8imp.iml" filepath="$PROJECT_DIR$/.idea/modules/java8imp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java8imp_main.iml" filepath="$PROJECT_DIR$/.idea/modules/java8imp_main.iml" group="java8imp" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java8imp_test.iml" filepath="$PROJECT_DIR$/.idea/modules/java8imp_test.iml" group="java8imp" />
     </modules>
   </component>
 </project>
