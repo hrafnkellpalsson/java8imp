@@ -9,6 +9,7 @@ public class MyStack {
         // Take 'number' and push it on to the stack
     }
 
+    // Using bounded wildcard types
     public void push(Set<? extends Number> numbers){
         for (Number n : numbers) {
             // Take 'n' and push it on to the stack
@@ -20,6 +21,7 @@ public class MyStack {
         throw new UnsupportedOperationException();
     }
 
+    // Using bounded wildcard types
     public Set<? super Number> pop(Set<? super Number> numbers, int n){
         // return a list of numbers from top of stack
         // Go fetch those numbers and shove them into collection

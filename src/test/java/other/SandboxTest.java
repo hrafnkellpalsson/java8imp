@@ -6,8 +6,12 @@ import java.util.*;
 
 public class SandboxTest {
     @Test
-    public final void testSandbox2() {
-        Object[] ar = new Number[]{}; // Legal because arrays are covariant
-        // List<Object> li = new LinkedList<Number>(); // Illegal because lists (along with other collections) are NOT covariant.
+    public final void testSandbox() {
+        // TODO Why are both of these syntaxes allowed?
+        Object[] o1 = new Object[]{};
+        Object[] o2 = new Object[1];
+
+
+        List<String>[] gong = null;
     }
 }

@@ -2,28 +2,32 @@ package other;
 
 import org.testng.annotations.Test;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class MyStackTest {
     @Test
-    public final void testSandbox1() {
+    public final void testPush() {
         MyStack myStack = new MyStack();
 
-        Set<Number> mySet = new HashSet<>();
-        mySet.add(3);
-        mySet.add(5);
-        myStack.push(mySet);
+        Set<Number> numSet = new HashSet<>();
+        numSet.add(3);
+        numSet.add(5);
+        myStack.push(numSet); // Obviously we can push a set of Numbers
 
-        Set<Integer> myIntSet = new HashSet<>();
-        myIntSet.add(7);
-        myIntSet.add(8);
-        myStack.push(myIntSet);
+        Set<Integer> intSet = new HashSet<>();
+        intSet.add(7);
+        intSet.add(8);
+        myStack.push(intSet); // We can also push a set of Integers because we implemented PECS!
+    }
 
-        Set<Number> empty = new HashSet<>();
-        Set<? super Number> popped = myStack.pop(empty, 4);
+    @Test
+    public final void testPop() {
+        MyStack myStack = new MyStack();
 
-        Set<Object> emptyObj = new HashSet<>();
-        Set<? super Number> poppedObj = myStack.pop(emptyObj, 4);
+        Set<Number> numSet = new HashSet<>();
+        Set<? super Number> popped = myStack.pop(numSet, 4); // Obviously we can pop into a set of Numbers
+
+        Set<Object> objSet = new HashSet<>();
+        Set<? super Number> poppedObj = myStack.pop(objSet, 4); // We can also pop into a set of Objects because we implemented PECS!
     }
 }
