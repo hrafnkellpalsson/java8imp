@@ -11,7 +11,9 @@ public class SandboxTest {
         Object[] o1 = new Object[]{};
         Object[] o2 = new Object[1];
 
-
-        List<String>[] gong = null;
+        // What are clas literals?
+        Class<String> s = String.class;
+        Class<List> ls = List.class;
+        Class<?> c = Class.class;
     }
 }

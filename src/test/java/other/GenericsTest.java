@@ -46,4 +46,22 @@ public class GenericsTest {
         int num = Generics.nCommon(s1, s2);
         Assert.assertEquals(num, 1);
     }
+
+    @Test
+    public void testCreateGenericArray() {
+        // Note that we don't explicitly have to state the type parameter for generic methods.
+        // This is Java type inference which is pretty limited compared to say C#'s var or to Scala in general.
+        String[] input = new String[]{"bla", "ble"};
+        // String[] strArr = Generics.<String>createGenericArray(input); - Unnecessary to specify type argument
+        String[] strArr = Generics.createGenericArray(input);
+        // Sometimes even this limited type inference doesn't work so you have to specify the type parameter explicitly.
+
+        // If the generic method is a constructor we can still use type inference! Which didn't use to be the case,
+        // hence the factory methods for various collections in Google's Guava.
+        // This feature was added in Java 7.
+        Map<String, Integer> map = new HashMap<>();
+        map.put("one", 1);
+        map.put("two", 2);
+        map.forEach((k,v) -> System.out.println(k+v));
+    }
 }
