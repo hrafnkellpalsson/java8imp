@@ -14,7 +14,8 @@ public class ClassStuff {
         Class<List> cl = List.class;
         // Class<List<String>> cls = List<String>.class - Right hand side is illegal by JLS!
         Class<String[]> csa = String[].class;
-        Class<Integer> ci = Integer.class;
+        Class<Integer> ci0 = Integer.class;
+        Class<Integer> ci1 = Integer.TYPE; // - Same as Integer.class, also available for other primitive types.
         Class<Integer> cip = int.class; // Automatic boxing
         Class<Class> cc = Class.class; // Mind blown!
     }

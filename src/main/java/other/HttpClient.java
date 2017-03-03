@@ -64,8 +64,6 @@ public class HttpClient {
                 .get();
         Response response2 = future2.get();
         System.out.println("Status 2: " + response2.getStatus());
-
-
     }
 
     /**
