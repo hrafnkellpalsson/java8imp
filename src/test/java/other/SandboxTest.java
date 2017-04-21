@@ -5,8 +5,12 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 public class SandboxTest {
+    private static PrintStream out = System.out;
     @Test
     public final void testSandbox() throws IOException {
-        PrintStream out = System.out;
+        out.println(7/2);
+        out.println(Math.floorDiv(7, 2));
+        out.println(-7/2);
+        out.println(Math.floorDiv(-7, 2));
     }
 }

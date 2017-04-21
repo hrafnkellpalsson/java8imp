@@ -1,10 +1,5 @@
-group 'com.palsson.java8imp'
+group 'io.palsson.java8imp'
 version '1.0'
-
-task wrapper(type: Wrapper) {
-  gradleVersion = '2.11'
-  distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
-}
 
 apply plugin: 'java'
 
@@ -16,8 +11,8 @@ repositories {
 
 dependencies {
     compile (
-        [group: 'org.immutables', name: 'immutables', version: '2.1.14'],
-        [group: 'com.javaslang', name: 'javaslang', version: '2.0.0-RC4'],
+        [group: 'org.immutables', name: 'immutables', version: '2.4.4'],
+        [group: 'io.javaslang', name: 'javaslang', version: '2.1.0-alpha'],
         [group: 'org.glassfish.jersey.core', name: 'jersey-client', version: '2.22.2'],
         [group: 'org.glassfish.jersey.ext.rx', name: 'jersey-rx-client-rxjava', version: '2.22.2'],
         [group: 'org.glassfish.jersey.ext.rx', name: 'jersey-rx-client-java8', version: '2.22.2']
@@ -25,10 +20,15 @@ dependencies {
     testCompile group: 'org.testng', name: 'testng', version: '6.9.10'
 }
 
-task homeDir << {
-    println gradle.gradleHomeDir
+task homeDir {
+    doLast {
+        println gradle.gradleHomeDir
+    }
+
 }
 
-task showCache << {
-    configurations.compile.each { println it }
+task showCache {
+    doLast {
+        configurations.compile.each { println it }
+    }
 }

@@ -6,12 +6,12 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 public class Chapter1 {
-    // We can make a recursive lambda function, compiler complains about go not being found in method ex2()
+    // Recursive lambdas are not supported
 //    private Consumer<File> go = f -> {
 //        File[] dirs = f.listFiles(File::isDirectory);
 //        for (File dir : dirs) {
 //            System.out.println(dir);
-//            this.go.accept(dir);
+//            go.accept(dir);
 //        }
 //    };
 
