@@ -2,6 +2,7 @@ group 'io.palsson.java8imp'
 version '1.0'
 
 apply plugin: 'java'
+// TODO Add Checkstyle plugin
 
 sourceCompatibility = 1.8
 
