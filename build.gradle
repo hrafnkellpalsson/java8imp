@@ -15,11 +15,6 @@ repositories {
 }
 
 dependencies {
-    compile 'org.glassfish.jersey.core:jersey-client:2.22.2',
-            'org.glassfish.jersey.ext.rx:jersey-rx-client-rxjava:2.22.2',
-            'org.glassfish.jersey.ext.rx:jersey-rx-client-java8:2.22.2',
-            'org.immutables:immutables:2.4.4',
-            'io.javaslang:javaslang:2.1.0-alpha'
     testCompile 'junit:junit:4.12'
 }
 
