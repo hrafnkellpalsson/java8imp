@@ -1,4 +1,4 @@
-package excercises;
+package io.palsson.exercises;
 
 import java.io.File;
 import java.util.Arrays;

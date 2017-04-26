@@ -1,4 +1,4 @@
-package excercises;
+package io.palsson.exercises;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;

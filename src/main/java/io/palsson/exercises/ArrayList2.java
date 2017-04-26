@@ -1,4 +1,4 @@
-package excercises;
+package io.palsson.exercises;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
