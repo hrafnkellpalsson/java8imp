@@ -1,16 +1,20 @@
 package excercises;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.*;
-import java.util.stream.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
-public class Chapter2 {
+class Chapter2 {
+  private static PrintStream out = System.out;
 
   /**
    * Write a parallel version of the for loop in Section 2.1, "From Iteration to Stream Operations,"
@@ -18,33 +22,25 @@ public class Chapter2 {
    * segment of the list, and total up the results as they come in. (You don't want the threads to
    * update a single counter. Why?)
    */
-  void ex1() {
-    int numProcessors = Runtime.getRuntime().availableProcessors();
-    System.out.println("nProcessors=" + numProcessors);
+  static void ex1() {
+    int numProc = Runtime.getRuntime().availableProcessors();
+    List<String> words = Helper.getBookWords("alice.txt");
 
-    // TODO Implement rest of answer.
+    // TODO Implement rest of answer
   }
 
   /**
    * Verify that asking for the first five long words does not call the filter method once the fifth
    * long word has been found. Simply log each method call.
    */
-  void ex2() {
-    String loremIpsum =
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-            "incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation "
-            +
-            "ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in "
-            +
-            "voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non "
-            +
-            "proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-    List<String> words = Arrays.asList(loremIpsum.split("[\\P{L}]+"));
-    List<String> stream = words.stream()
-        .peek(System.out::println)
-        .filter(w -> w.length()
-            > 4) // Let's make the criteria for a 'long' word low so we getSync less output.
-        .limit(5)
+  static void ex2() {
+    final int longWordLength = 6;
+    final int numWords = 5;
+    List<String> longWords = Helper.getBookWords("alice.txt")
+        .stream()
+        .peek(out::println)
+        .filter(w -> w.length() >= longWordLength)
+        .limit(numWords)
         .collect(Collectors.toList());
   }
 
@@ -53,31 +49,29 @@ public class Chapter2 {
    * System.nanoTime before and after the call, and print the difference. Switch to a larger
    * document (such as War and Peace) if you have a fast computer.
    */
-  public void ex3() throws IOException {
-    Path path = Paths.get(
-        "/Users/hrafnkellpalsson/IdeaProjects/java8imp/src/main/java/excercises/WarAndPeace.txt");
-    byte[] bytes = Files.readAllBytes(path);
-    String content = new String(bytes, StandardCharsets.UTF_8);
-    List<String> words = Arrays.asList(content.split("[\\P{L}]+"));
+  static void ex3() throws IOException {
+    List<String> words = Helper.getBookWords("warAndPeace.txt");
+    final double nanoToMilli = 1000000;
+    final int longWordLength = 13;
+    long t1, t2, t3, t4;
+    long numWords;
 
-    double nanoToMilli = 1000000;
+    t1 = System.nanoTime();
+    numWords = words.stream().filter(w -> w.length() >= longWordLength).count();
+    t2 = System.nanoTime();
+    out.println("Time for single threaded operation: " + (t2 - t1) / nanoToMilli);
 
-    long t1 = System.nanoTime();
-    words.stream().filter(w -> w.length() > 12).count();
-    long t2 = System.nanoTime();
-    System.out.println("Time for single threaded operation: " + (t2 - t1) / nanoToMilli);
-
-    long t3 = System.nanoTime();
-    words.stream().parallel().filter(w -> w.length() > 12).count();
-    long t4 = System.nanoTime();
-    System.out.println("Time for parallel operation: " + (t4 - t3) / nanoToMilli);
+    t3 = System.nanoTime();
+    numWords = words.stream().parallel().filter(w -> w.length() >= longWordLength).count();
+    t4 = System.nanoTime();
+    out.println("Time for parallel operation: " + (t4 - t3) / nanoToMilli);
   }
 
   /**
    * Suppose you have an array int[] values = { 1, 4, 9, 16 }. What is Stream.of(values)? How do you
    * getSync a stream of int instead?
    */
-  public void ex4() {
+  static void ex4() {
     int[] values = {1, 4, 9, 16};
     Stream<Object> objStream = Stream.of(values);
     IntStream intStream = IntStream
@@ -88,20 +82,20 @@ public class Chapter2 {
    * Using Stream.iterate, make an infinite stream of random numbers - not by calling Math.random
    * but by directly implementing a linear congruential generator...
    */
-  void ex5() {
+  static void ex5() {
     long seed = 8;
     long a = 25214903917L;
     long c = 11;
     long m = 2 ^ 48;
     Stream<Long> stream = LongStream.iterate(seed, x -> (a * x + c) % m).boxed();
-    stream.limit(5).forEach(System.out::println);
+    stream.limit(5).forEach(out::println);
   }
 
   /**
    * The characterStream method in Section 2.3 on page 25 was a bit clumsy. Write a stream-based
    * one-liner instead.
    */
-  void ex6() {
+  static void ex6() {
     String s = "drumpf";
     Stream<Character> stream;
 
@@ -111,21 +105,21 @@ public class Chapter2 {
       result.add(c);
     }
     stream = result.stream();
-    stream.forEach(System.out::println);
+    stream.forEach(out::println);
 
     // Better implementation.
     stream = IntStream.range(0, s.length() - 1).map(s::charAt).mapToObj(c -> (char) c);
-    stream.forEach(System.out::println);
+    stream.forEach(out::println);
     // Even better
     stream = s.chars().mapToObj(c -> (char) c);
-    stream.forEach(System.out::println);
+    stream.forEach(out::println);
   }
 
   /**
    * Your manager asks you to write a method public static <T> boolean isFinite(Steam<T> stream).
    * Why isn't that such a good idea? Go ahead and write in anyway.
    */
-  void ex7() {
+  static void ex7() {
     // This is not a good idea because the method will never return if the stream is infinite.
     boolean isFinite = isFinite(Stream.generate(() -> "a"));
   }
@@ -140,7 +134,7 @@ public class Chapter2 {
    * alternates elements from the stream first and second, stopping when one of them runs out of
    * elements.
    */
-  public void ex8() {
+  static void ex8() {
     // If we allow one or both streams to be infinite this seems to be somewhat involved.
     // We could copy implementation from potonpack library, see http://stackoverflow.com/a/25668784/1728563
   }
@@ -149,7 +143,7 @@ public class Chapter2 {
    * Join all elements in a Stream<ArrayList<T>> to one ArrayList<T>. Show how to do this with the
    * three forms of reduce.
    */
-  void ex9_1() {
+  static void ex9_1() {
     // Let's first try a simple non generic implementation.
     ArrayList<LocalDate> janDates = IntStream.range(1, 3)
         .mapToObj(i -> LocalDate.of(2016, Month.JANUARY, i))
@@ -171,8 +165,8 @@ public class Chapter2 {
           return x;
         })
         .orElse(new ArrayList<>(Collections.emptyList()));
-    // System.out.println("Solution 1");
-    // listDates1.forEach(System.out::println);
+    // out.println("Solution 1");
+    // listDates1.forEach(out::println);
 
     // Solution 2 - Use an identity so we don't need to deal with Optional
     Stream<ArrayList<LocalDate>> streamDates2 = Stream.of(janDates, febDates, marDates);
@@ -181,8 +175,8 @@ public class Chapter2 {
           x.addAll(y);
           return x;
         });
-    System.out.println("Solution 2");
-    listDates2.forEach(System.out::println);
+    out.println("Solution 2");
+    listDates2.forEach(out::println);
 
     // Solution 3 - The combiner function isn't needed here because the argument types are the same as the result
     // types. But we can use it nevertheless.
@@ -195,12 +189,12 @@ public class Chapter2 {
           z.addAll(w);
           return z;
         });
-    // System.out.println("Solution 3");
-    // listDates3.forEach(System.out::println);
+    // out.println("Solution 3");
+    // listDates3.forEach(out::println);
   }
 
   // Now let's do the generic version, using only the best way, i.e. Solution 2, from the simplified example above.
-  <T> ArrayList<T> ex9_2(Stream<ArrayList<T>> stream) {
+  static <T> ArrayList<T> ex9_2(Stream<ArrayList<T>> stream) {
     return stream.reduce(new ArrayList<>(Collections.emptyList()), (x, y) -> {
       x.addAll(y);
       return x;
@@ -214,7 +208,7 @@ public class Chapter2 {
    * Write a call to reduce that can be used to compute the average of a Stream<Double>. Why can't
    * you simply compute the sum and divide by count()?
    */
-  void ex10() {
+  static void ex10() {
     // Firstly, remember that for a DoubleStream there is an average() method, but that method is only available for
     // primitive streams (as are sum(), max(), min() and summaryStatistics()).
 
@@ -224,7 +218,7 @@ public class Chapter2 {
     // OptionalDouble optAv = dStream.average();
     // Or as a one liner with an identity
     Double av1 = stream1.mapToDouble(d -> d).average().orElse(0);
-    System.out.println("Cheating: " + av1);
+    out.println("Cheating: " + av1);
 
     // Now no cheating, let's use reduce() as requested.
     // We can't simply compute the sum and divide by count() because we can't consume the stream
@@ -235,7 +229,7 @@ public class Chapter2 {
     double av2 = stream2.reduce(new ImmutableAverager(0D, 0), ImmutableAverager::accumulator,
         ImmutableAverager::combiner)
         .average();
-    System.out.println("Not cheating: " + av2);
+    out.println("Not cheating: " + av2);
   }
 }
 

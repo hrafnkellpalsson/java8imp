@@ -2,11 +2,11 @@ package other;
 
 import java.io.PrintStream;
 
-public class Unicode {
+class Unicode {
 
   private static PrintStream out = System.out;
 
-  public static void stuff() {
+  static void stuff() {
     int codePoint = 0x10000;
     char[] sPair = Character.toChars(codePoint);
     String s = new String(sPair);

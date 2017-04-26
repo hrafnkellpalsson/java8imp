@@ -37,7 +37,7 @@ import java.util.concurrent.CompletableFuture;
 // Type 4
 // Bounded wildcard type: List<? extends String> or List<? super String> - For covariance and
 // contra-variance, see classes MyStack and MyStackTest.
-public class Generics {
+class Generics {
   static int numCommon(Set<?> s1, Set<?> s2) {
     int result = 0;
     for (Object o1 : s1) {

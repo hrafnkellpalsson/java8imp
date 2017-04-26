@@ -4,19 +4,19 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
 
-public class Chapter1 {
+class Chapter1 {
   /**
    * Using the listFiles(FileFilter) and isDirectory methods of the java.io.File class, write a
    * method that returns all subdirectories of a given directory. Use a lambda expression instead of
    * a FileFilter object. Repeat with a method reference.
    */
-  void ex2() {
+  static void ex2() {
     // Recursive lambdas are not supported, so that's not an option.
     File file = new File("/Users/hrafnkellpalsson/Downloads");
     go(file);
   }
 
-  private void go(File file) {
+  private static void go(File file) {
     // File[] dirs = file.listFiles(f -> f.isDirectory());
     File[] dirs = file.listFiles(File::isDirectory);
     for (File dir : dirs) {
@@ -30,7 +30,7 @@ public class Chapter1 {
    * within each group, elements are sorted by path name. Use a lambda expression, not a
    * Comparator.
    */
-  void ex4() {
+  static void ex4() {
     final String base = "/Users/hrafnkellpalsson/Downloads";
     File[] files = new File[9];
     files[0] = new File(base + "/what");
@@ -75,7 +75,7 @@ public class Chapter1 {
    * forEachIf(Consumer<T> action, Predicate<T> filter) that applies action to each element for
    * which filter returns true. How could you use it?
    */
-  void ex9() {
+  static void ex9() {
     Collection2<String> li = new ArrayList2<>();
     li.add("Basketball");
     li.add("Baseball");
@@ -88,7 +88,7 @@ public class Chapter1 {
    * Go through the method of the Collections class. If you were king for a day, into which
    * interface would you place each method? Would it be a default method or a static method?
    */
-  public void ex10() {
+  static void ex10() {
     // Factory methods would be static methods on a given interface. Example:
     // public static final <T> Set<T> emptySet() in Collections helper class would be
     // static <T> Set<T> emptySet() in Set interface
@@ -105,7 +105,7 @@ public class Chapter1 {
    * method of the Collection interface causes legacy code to fail compilation. What about binary
    * compatibility? Will legacy code from a JAR file still run?
    */
-  public void ex12() {
+  static void ex12() {
     // A case where legacy code would fail compilation:
     // A custom object implements the Collection interface and a custom interface that has a method with the same
     // signature as the stream() method of the Collection interface.

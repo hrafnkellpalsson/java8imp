@@ -3,7 +3,7 @@ package other;
 import java.util.Set;
 
 // Working on PECS rule - Producer extends, consumer super
-public class MyStack {
+class MyStack {
 
   public void push(Number number) {
     // Take 'number' and push it on to the stack

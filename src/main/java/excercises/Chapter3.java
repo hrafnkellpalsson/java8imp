@@ -1,5 +1,5 @@
 package excercises;
 
-public class Chapter3 {
+class Chapter3 {
 
 }
