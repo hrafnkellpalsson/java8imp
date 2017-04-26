@@ -1,6 +1,6 @@
 package excercises;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.time.LocalDate;

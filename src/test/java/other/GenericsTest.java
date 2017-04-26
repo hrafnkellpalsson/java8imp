@@ -1,13 +1,13 @@
 package other;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.*;
 
 public class GenericsTest {
 
-  @Test(expectedExceptions = ArrayStoreException.class)
+  @Test(expected = ArrayStoreException.class)
   public void testCovariance() {
     // Legal because arrays are covariant
     Object[] x = new String[1];
@@ -21,7 +21,7 @@ public class GenericsTest {
     List li = new LinkedList<Number>();
   }
 
-  @Test(expectedExceptions = ClassCastException.class)
+  @Test(expected = ClassCastException.class)
   public void testRawType() {
     // Using raw types we don't get type safety anymore, i.e. code can throw ClassCastException at runtime.
     List badList = new ArrayList<String>();
