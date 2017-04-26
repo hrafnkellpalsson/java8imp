@@ -1,32 +1,23 @@
 package excercises;
 
 import java.io.File;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class Chapter1 {
-  // Recursive lambdas are not supported
-//    private Consumer<File> go = f -> {
-//        File[] dirs = f.listFiles(File::isDirectory);
-//        for (File dir : dirs) {
-//            System.out.println(dir);
-//            go.accept(dir);
-//        }
-//    };
-
   /**
    * Using the listFiles(FileFilter) and isDirectory methods of the java.io.File class, write a
    * method that returns all subdirectories of a given directory. Use a lambda expression instead of
    * a FileFilter object. Repeat with a method reference.
    */
-  public void ex2() {
+  void ex2() {
+    // Recursive lambdas are not supported, so that's not an option.
     File file = new File("/Users/hrafnkellpalsson/Downloads");
     go(file);
   }
 
-  public void go(File file) {
-//        File[] dirs = file.listFiles(f -> f.isDirectory());
+  private void go(File file) {
+    // File[] dirs = file.listFiles(f -> f.isDirectory());
     File[] dirs = file.listFiles(File::isDirectory);
     for (File dir : dirs) {
       System.out.println(dir);
@@ -39,7 +30,7 @@ public class Chapter1 {
    * within each group, elements are sorted by path name. Use a lambda expression, not a
    * Comparator.
    */
-  public void ex4() {
+  void ex4() {
     final String base = "/Users/hrafnkellpalsson/Downloads";
     File[] files = new File[9];
     files[0] = new File(base + "/what");
@@ -52,7 +43,8 @@ public class Chapter1 {
     files[7] = new File(base + "/what/when/BCE.txt");
     files[8] = new File(base + "/what/when/CE.txt");
 
-    // We could have converted the array to a list and used the sort() method defined on the list interface.
+    // We could have converted the array to a list and used the sort() method defined on the list
+    // interface.
     // List<File> fs = Arrays.asList(files);
 
     Comparator<? super File> comparator = (f1, f2) -> {
@@ -79,11 +71,11 @@ public class Chapter1 {
   }
 
   /**
-   * Form a subinterface Collection2 from Collection and add a default method void
+   * Form a sub-interface Collection2 from Collection and add a default method void
    * forEachIf(Consumer<T> action, Predicate<T> filter) that applies action to each element for
    * which filter returns true. How could you use it?
    */
-  public void ex9() {
+  void ex9() {
     Collection2<String> li = new ArrayList2<>();
     li.add("Basketball");
     li.add("Baseball");

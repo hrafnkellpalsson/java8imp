@@ -2,85 +2,83 @@ package other;
 
 // Testing how the different types of inner classes work.
 // J. Bloch: A nested class should exist only to serve its enclosing class.
-public class OuterClass {
+class OuterClass {
 
-  public void PlainInstanceMethod() {
-    System.out.println("Can call enclosing class' PlainInstanceMethod");
+  private void plainInstanceMethod() {
+    System.out.println("Can call enclosing class' plainInstanceMethod");
   }
 
-  public static void PlainStaticMethod() {
-    System.out.println("Can call enclosing class' PlainStaticMethod");
+  static void plainStaticMethod() {
+    System.out.println("Can call enclosing class' plainStaticMethod");
   }
 
-  // J. Bloch paraphrased: Despite syntactic similarity static member classes are very different from nonstatic
-  // member classes.
-  // J. Bloch: If you declare a member class that does not require access to an enclosing instance, always put the
-  // static modifier in its declaration.
-  // Like any other static method, a static member class has access to all static methods of the enclosing class.
-  // J. Bloch: One common us eof a static member class is as a public helper class, useful only in conjunction with
-  // its outer class.
-  // J. Bloch: A common use of private static member classes is to represent components of the object represented by
-  // their enclosing lass.
+  // Bloch paraphrased: Despite syntactic similarity static member classes are very different
+  // from non-static member classes.
+  // Bloch: If you declare a member class that does not require access to an enclosing instance,
+  // always put the static modifier in its declaration.
+  // Like any other static method, a static member class has access to all static methods of the
+  // enclosing class.
+  // Bloch: One common us eof a static member class is as a public helper class, useful only in
+  // conjunction with its outer class.
+  // Bloch: A common use of private static member classes is to represent components of the object
+  // represented by their enclosing lass.
   static class StaticClass {
-
-    void meth() {
-      System.out.println("In StaticClass.meth");
-      PlainStaticMethod(); // We can call a static method of the enclosing class, but not an instance method.
+    void method() {
+      System.out.println("In StaticClass.method");
+      // We can call a static method of the enclosing class, but not an instance method.
+      plainStaticMethod();
     }
   }
 
-  // A member class is instance specific and has access to any and all methods and members, even the parent's this
-  // reference.
-  // J. Bloch paraphrased: Nonstatic member classes are used as Adapters and to implement iterators.
+  // A member class is instance specific and has access to any and all methods and members, even the
+  // parent's this reference. Bloch paraphrased: Non-static member classes are used as Adapters and
+  // to implement iterators.
   class Clazz {
 
-    void meth() {
-      System.out.println("In Clazz.meth");
-      PlainInstanceMethod();
-      PlainStaticMethod();
+    void method() {
+      System.out.println("In Clazz.method");
+      plainInstanceMethod();
+      plainStaticMethod();
       System.out.println(
-          "Acceessing name of class through .this reference: " + this.getClass().getName());
+          "Accessing name of class through .this reference: " + this.getClass().getName());
     }
   }
 
-  public class PublicClass {
-
-    void meth() {
-      System.out.println("In PublicClass.meth");
-      PlainInstanceMethod();
-      PlainStaticMethod();
+  class PublicClass {
+    void method() {
+      System.out.println("In PublicClass.method");
+      plainInstanceMethod();
+      plainStaticMethod();
       System.out.println(
-          "Acceessing name of class through .this reference: " + this.getClass().getName());
+          "Accessing name of class through .this reference: " + this.getClass().getName());
     }
   }
 
   private class PrivateClass {
-
-    void meth() {
-      System.out.println("In PrivateClass.meth");
-      PlainInstanceMethod();
-      PlainStaticMethod();
+    void method() {
+      System.out.println("In PrivateClass.method");
+      plainInstanceMethod();
+      plainStaticMethod();
       System.out.println(
-          "Acceessing name of class through .this reference: " + this.getClass().getName());
+          "Accessing name of class through .this reference: " + this.getClass().getName());
     }
   }
 
-  public void methodLocalClassExample() {
+  void methodLocalClassExample() {
     class MethodLocalClass {
-
-      public void meth() {
-        System.out.println("In MethodLocalClass.meth");
-        PlainInstanceMethod();
-        PlainStaticMethod();
+      private void method() {
+        System.out.println("In MethodLocalClass.method");
+        plainInstanceMethod();
+        plainStaticMethod();
       }
     }
 
     // We can only access a method local class in the enclosing method.
     MethodLocalClass mlc = new MethodLocalClass();
-    mlc.meth();
+    mlc.method();
   }
 
-  public Clazz ClazzFactory() {
+  Clazz clazzFactory() {
     return new Clazz();
   }
 }

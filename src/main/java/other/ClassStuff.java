@@ -3,8 +3,7 @@ package other;
 import java.util.List;
 
 public class ClassStuff {
-
-  public void classTypes() {
+  void classTypes() {
     // Literals are the values of primitive types. Java also supports string literals.
     // These literals all have a type, e.g.
     int i = 0;

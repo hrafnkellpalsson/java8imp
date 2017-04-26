@@ -1,7 +1,5 @@
 package excercises;
 
-import org.junit.Test;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
@@ -9,9 +7,9 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import org.junit.Test;
 
 public class Chapter2Test {
-
   @Test
   public void testEx1() {
     Chapter2 ch2 = new Chapter2();

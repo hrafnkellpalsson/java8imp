@@ -5,7 +5,6 @@ import org.junit.Test;
 import java.util.concurrent.ExecutionException;
 
 public class HttpClientTest {
-
   @Test
   public void testGetSync() {
     HttpClient httpClient = new HttpClient();

@@ -18,7 +18,7 @@ public class Chapter2 {
    * segment of the list, and total up the results as they come in. (You don't want the threads to
    * update a single counter. Why?)
    */
-  public void ex1() {
+  void ex1() {
     int numProcessors = Runtime.getRuntime().availableProcessors();
     System.out.println("nProcessors=" + numProcessors);
 
@@ -29,7 +29,7 @@ public class Chapter2 {
    * Verify that asking for the first five long words does not call the filter method once the fifth
    * long word has been found. Simply log each method call.
    */
-  public void ex2() {
+  void ex2() {
     String loremIpsum =
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
             "incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation "
@@ -88,7 +88,7 @@ public class Chapter2 {
    * Using Stream.iterate, make an infinite stream of random numbers - not by calling Math.random
    * but by directly implementing a linear congruential generator...
    */
-  public void ex5() {
+  void ex5() {
     long seed = 8;
     long a = 25214903917L;
     long c = 11;
@@ -101,7 +101,7 @@ public class Chapter2 {
    * The characterStream method in Section 2.3 on page 25 was a bit clumsy. Write a stream-based
    * one-liner instead.
    */
-  public void ex6() {
+  void ex6() {
     String s = "drumpf";
     Stream<Character> stream;
 
@@ -125,12 +125,12 @@ public class Chapter2 {
    * Your manager asks you to write a method public static <T> boolean isFinite(Steam<T> stream).
    * Why isn't that such a good idea? Go ahead and write in anyway.
    */
-  public void ex7() {
+  void ex7() {
     // This is not a good idea because the method will never return if the stream is infinite.
     boolean isFinite = isFinite(Stream.generate(() -> "a"));
   }
 
-  public static <T> boolean isFinite(Stream<T> stream) {
+  private static <T> boolean isFinite(Stream<T> stream) {
     stream.count();
     return true;
   }
@@ -149,7 +149,7 @@ public class Chapter2 {
    * Join all elements in a Stream<ArrayList<T>> to one ArrayList<T>. Show how to do this with the
    * three forms of reduce.
    */
-  public void ex9_1() {
+  void ex9_1() {
     // Let's first try a simple non generic implementation.
     ArrayList<LocalDate> janDates = IntStream.range(1, 3)
         .mapToObj(i -> LocalDate.of(2016, Month.JANUARY, i))
@@ -200,7 +200,7 @@ public class Chapter2 {
   }
 
   // Now let's do the generic version, using only the best way, i.e. Solution 2, from the simplified example above.
-  public <T> ArrayList<T> ex9_2(Stream<ArrayList<T>> stream) {
+  <T> ArrayList<T> ex9_2(Stream<ArrayList<T>> stream) {
     return stream.reduce(new ArrayList<>(Collections.emptyList()), (x, y) -> {
       x.addAll(y);
       return x;
@@ -214,22 +214,23 @@ public class Chapter2 {
    * Write a call to reduce that can be used to compute the average of a Stream<Double>. Why can't
    * you simply compute the sum and divide by count()?
    */
-  public void ex10() {
+  void ex10() {
     // Firstly, remember that for a DoubleStream there is an average() method, but that method is only available for
     // primitive streams (as are sum(), max(), min() and summaryStatistics()).
 
     // So we could cheat and not use reduce()
     Stream<Double> stream1 = DoubleStream.of(1, 2, 3, 4, 5).boxed();
-//        DoubleStream dStream  = stream1.mapToDouble(d -> d);
-//        OptionalDouble optAv = dStream.average();
+    // DoubleStream dStream  = stream1.mapToDouble(d -> d);
+    // OptionalDouble optAv = dStream.average();
     // Or as a one liner with an identity
     Double av1 = stream1.mapToDouble(d -> d).average().orElse(0);
     System.out.println("Cheating: " + av1);
 
     // Now no cheating, let's use reduce() as requested.
-    // We can't simply compute the sum and divide by count() because we can't consume the stream twice.
-    // Note that the reduce we apply here is a terminal operation in the sense that the reduced stream gets reduced
-    // to a single value, but nevertheless it's not the last operation in our calculations.
+    // We can't simply compute the sum and divide by count() because we can't consume the stream
+    // twice. Note that the reduce we apply here is a terminal operation in the sense that the
+    // reduced stream gets reduced to a single value, but nevertheless it's not the last operation
+    // in our calculations.
     Stream<Double> stream2 = DoubleStream.of(1, 2, 3, 4, 5).boxed();
     double av2 = stream2.reduce(new ImmutableAverager(0D, 0), ImmutableAverager::accumulator,
         ImmutableAverager::combiner)

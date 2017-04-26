@@ -5,7 +5,6 @@ import org.junit.Test;
 import java.util.*;
 
 public class MyStackTest {
-
   @Test
   public final void testPushAll() {
     MyStack myStack = new MyStack();
@@ -29,6 +28,7 @@ public class MyStackTest {
     myStack.popAll(numSet, 4); // Obviously we can pop into a set of Numbers
 
     Set<Object> objSet = new HashSet<>();
-    myStack.popAll(objSet, 4); // We can also pop into a set of Objects because we implemented PECS!
+    // We can also pop into a set of Objects because we implemented PECS!
+    myStack.popAll(objSet, 4);
   }
 }

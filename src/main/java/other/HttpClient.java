@@ -1,23 +1,20 @@
 package other;
 
+// import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import javax.ws.rs.client.*;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ChunkedInput;
 import org.glassfish.jersey.client.rx.java8.RxCompletionStage;
 import org.glassfish.jersey.client.rx.rxjava.RxObservable;
 import rx.Observable;
 
-import javax.ws.rs.client.*;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
-
-public class HttpClient {
-
-  public void getSync() {
+class HttpClient {
+  void getSync() {
     // Non-fluent style so we see intermediate types
     Client client = ClientBuilder.newClient();
     WebTarget target = client.target("http://nytimes.com");
@@ -47,7 +44,7 @@ public class HttpClient {
     System.out.println("Status 3: " + response3.getStatus());
   }
 
-  public void getAsync() throws ExecutionException, InterruptedException {
+  void getAsync() throws ExecutionException, InterruptedException {
     // Non-fluent style so we see intermediate types
     Client client = ClientBuilder.newClient();
     final AsyncInvoker asyncInvoker = client.target("http://nytimes.com")
@@ -73,7 +70,7 @@ public class HttpClient {
    * Remember that when working with the Future interface in Java in general callbacks are also
    * available through the FutureTask implementation.
    */
-  public void getAsyncWithCallback() throws ExecutionException, InterruptedException {
+  void getAsyncWithCallback() throws ExecutionException, InterruptedException {
     // Fluent style with a call back
     Future<Response> future3 = ClientBuilder.newClient()
         .target("http://nytimes.com")
@@ -100,7 +97,7 @@ public class HttpClient {
    * fashion from the server. It's only the parsing of the answer into a type (here String) that
    * happens in a chunked fashion.
    */
-  public void getReadChunked() {
+  void getReadChunked() {
     final Response response = ClientBuilder.newClient()
         .target("http://nytimes.com")
         .request()
@@ -115,16 +112,17 @@ public class HttpClient {
   }
 
   /**
-   * Use the Netflix library for the Reactive Jersey Client API
+   * Use the Netflix library for the Reactive Jersey Client API.
    */
-  public void getRxJava() {
+  void getRxJava() {
     Observable<Response> observable = RxObservable.newClient()
         .target("http://nytimes.com")
         .request()
         .rx()
         .get();
 
-    // observable.forEach() didn't work on its own, probably because it's async. toBlocking() did the trick.
+    // observable.forEach() didn't work on its own, probably because it's async. toBlocking() did
+    // the trick.
     observable.toBlocking().forEach(System.out::println);
 
     // The correct way is probably to set up an Observer to getSync the value of the Observable.
@@ -132,17 +130,17 @@ public class HttpClient {
   }
 
   /**
-   * Use standard Java SE 8 for the Reactive Jersey Client API
+   * Use standard Java SE 8 for the Reactive Jersey Client API.
    */
-  public void getRxJava8() throws InterruptedException {
+  void getRxJava8() throws InterruptedException {
     CompletionStage<Response> future = RxCompletionStage.newClient()
         .target("http://nytimes.com")
         .request()
         .rx()
         .get();
 
-    // The CompletableFuture method get() or stage() are not available on the interface so we do a Thread.sleep()
-    // instead.
+    // The CompletableFuture method get() or stage() are not available on the interface so we do a
+    // Thread.sleep() instead.
     future.thenAccept(r -> System.out.println(r.getStatus()));
     Thread.sleep(2000);
   }

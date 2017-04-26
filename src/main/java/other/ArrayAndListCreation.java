@@ -7,11 +7,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class ArrayAndListCreation {
-
+class ArrayAndListCreation {
   private static PrintStream out = System.out;
 
-  public static void arrayCreation() {
+  static void arrayCreation() {
     // Initializing array and explicitly setting size is not allowed.
     // Object[] illegal = new Object[1]{1};
 
@@ -34,7 +33,7 @@ public class ArrayAndListCreation {
     Stream.of(emptyInteger).forEach(e -> out.format("%s ", e));
   }
 
-  public static void listCreation() {
+  static void listCreation() {
     // For comparison, with lists
     List<String> places = Arrays.asList("Buenos Aires", "Córdoba", "La Plata");
     // Or even

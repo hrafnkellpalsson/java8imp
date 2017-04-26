@@ -3,7 +3,6 @@ package excercises;
 import org.junit.Test;
 
 public class Chapter1Test {
-
   @Test
   public void testEx2() {
     Chapter1 ch1 = new Chapter1();
