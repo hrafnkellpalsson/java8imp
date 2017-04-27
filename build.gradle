@@ -2,7 +2,7 @@ group 'io.palsson.java8imp'
 version '1.0'
 
 apply plugin: 'java'
-// TODO Add Checkstyle plugin
+// TODO Add plugins checkstyle, findbugs, and pmd
 
 sourceCompatibility = 1.8
 
@@ -15,6 +15,7 @@ repositories {
 }
 
 dependencies {
+    compile "com.google.guava:guava:21.0"
     testCompile 'junit:junit:4.12'
 }
 

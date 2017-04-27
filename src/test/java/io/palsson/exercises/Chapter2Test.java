@@ -5,17 +5,22 @@ import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.junit.Test;
+import org.junit.Assert;
 
 public class Chapter2Test {
   private static PrintStream out = System.out;
 
   @Test
-  public void testEx1() {
-    throw new UnsupportedOperationException();
+  public void testEx1() throws ExecutionException, InterruptedException {
+    final String filename = "warAndPeace.txt";
+    long actual = Chapter2.ex1(filename);
+    long expected = Chapter2.singleThreadedCounting(filename);
+    Assert.assertEquals(expected, actual);
   }
 
   @Test

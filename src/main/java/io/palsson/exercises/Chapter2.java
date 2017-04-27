@@ -1,12 +1,23 @@
 package io.palsson.exercises;
 
+import com.google.common.base.Stopwatch;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentHashMap.KeySetView;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
@@ -14,7 +25,7 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 class Chapter2 {
-  private static PrintStream out = System.out;
+  private final static PrintStream out = System.out;
 
   /**
    * Write a parallel version of the for loop in Section 2.1, "From Iteration to Stream Operations,"
@@ -22,13 +33,68 @@ class Chapter2 {
    * segment of the list, and total up the results as they come in. (You don't want the threads to
    * update a single counter. Why?)
    */
-  static void ex1() {
-    int numProc = Runtime.getRuntime().availableProcessors();
-    List<String> words = Helper.getBookWords("alice.txt");
+  static long ex1(String fileName) throws InterruptedException, ExecutionException {
+    final int longWordLength = 13;
+    final List<String> words = Helper.getBookWords(fileName);
+    final int numCores = Runtime.getRuntime().availableProcessors();
+    out.format("numCores=%s\n", numCores);
 
-    // TODO Implement rest of answer
+    Stopwatch watch = Stopwatch.createStarted();
+    final int chunkSize = words.size() / numCores;
+    List<List<String>> chunks = new ArrayList<>(numCores);
+    int fromIndex, toIndex;
+    for (int i = 0; i < numCores - 1; i++) {
+      // Remember, fromIndex is inclusive, toIndex is exclusive
+      fromIndex = i * chunkSize;
+      toIndex = (i + 1) * chunkSize;
+      chunks.add(words.subList(fromIndex, toIndex));
+    }
+    fromIndex = (numCores - 1) * chunkSize;
+    toIndex = words.size();
+    chunks.add(words.subList(fromIndex, toIndex));
+
+    Set<Callable<Long>> tasks = new HashSet<>();
+    ExecutorService pool = Executors.newFixedThreadPool(numCores);
+    for (List<String> chunk : chunks) {
+      Callable c = () -> chunk.stream()
+          .filter(w -> w.length() >= longWordLength)
+          .count();
+      tasks.add(c);
+    }
+    List<Future<Long>> futures = pool.invokeAll(tasks);
+
+    long count = 0;
+    for (Future<Long> future : futures) {
+      count += future.get();
+    }
+    watch.stop();
+
+    pool.shutdown();
+    pool.awaitTermination(5, TimeUnit.SECONDS);
+
+    out.format("Parallel counting of long words took %sms\n",
+        watch.elapsed(TimeUnit.MILLISECONDS));
+
+    return count;
+    // We don't want the threads to update a single counter because that would result in a race
+    // condition.
   }
 
+  static long singleThreadedCounting(String filename) {
+    final int longWordLength = 13;
+    final List<String> words = Helper.getBookWords(filename);
+
+    Stopwatch watch = Stopwatch.createStarted();
+    long count = words.stream()
+        .filter(w -> w.length() >= longWordLength)
+        .count();
+
+    watch.stop();
+    out.format("Single threaded counting of long words took %sms\n",
+        watch.elapsed(TimeUnit.MILLISECONDS));
+
+    return count;
+  }
   /**
    * Verify that asking for the first five long words does not call the filter method once the fifth
    * long word has been found. Simply log each method call.
