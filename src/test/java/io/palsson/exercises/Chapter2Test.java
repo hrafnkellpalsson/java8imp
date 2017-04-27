@@ -12,14 +12,19 @@ import java.util.stream.Stream;
 import org.junit.Test;
 import org.junit.Assert;
 
+// We sometimes call methods in tests twice to allow the JVM to warm up and thereby get more
+// realistic runtimes.
 public class Chapter2Test {
   private static PrintStream out = System.out;
 
   @Test
   public void testEx1() throws ExecutionException, InterruptedException {
     final String filename = "warAndPeace.txt";
-    long actual = Chapter2.ex1(filename);
-    long expected = Chapter2.singleThreadedCounting(filename);
+    long actual, expected;
+    actual = Chapter2.ex1(filename);
+    actual = Chapter2.ex1(filename);
+    expected = Chapter2.singleThreadedCounting(filename);
+    expected = Chapter2.singleThreadedCounting(filename);
     Assert.assertEquals(expected, actual);
   }
 
@@ -31,6 +36,7 @@ public class Chapter2Test {
   @Test
   public void testEx3() throws IOException {
     Chapter2.ex3();
+    Chapter2.ex3();
   }
 
   @Test
@@ -41,11 +47,6 @@ public class Chapter2Test {
   @Test
   public void testEx6() throws IOException {
     Chapter2.ex6();
-  }
-
-  @Test
-  public void testEx7() throws IOException {
-    Chapter2.ex7();
   }
 
   @Test

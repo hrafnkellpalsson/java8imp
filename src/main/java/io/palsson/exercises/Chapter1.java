@@ -1,10 +1,13 @@
 package io.palsson.exercises;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Comparator;
 
 class Chapter1 {
+  private final static PrintStream out = System.out;
+
   /**
    * Using the listFiles(FileFilter) and isDirectory methods of the java.io.File class, write a
    * method that returns all subdirectories of a given directory. Use a lambda expression instead of
@@ -12,15 +15,15 @@ class Chapter1 {
    */
   static void ex2() {
     // Recursive lambdas are not supported, so that's not an option.
-    File file = new File("/Users/hrafnkellpalsson/Downloads");
+    File file = new File("./src");
     go(file);
   }
 
   private static void go(File file) {
-    // File[] dirs = file.listFiles(f -> f.isDirectory());
-    File[] dirs = file.listFiles(File::isDirectory);
+    // File[] dirs = file.listFiles(f -> f.isDirectory()); // Using a lambda expression
+    File[] dirs = file.listFiles(File::isDirectory); // Using a method reference
     for (File dir : dirs) {
-      System.out.println(dir);
+      out.println(dir);
       go(dir);
     }
   }
@@ -31,17 +34,17 @@ class Chapter1 {
    * Comparator.
    */
   static void ex4() {
-    final String base = "/Users/hrafnkellpalsson/Downloads";
+    final String base = ".";
     File[] files = new File[9];
-    files[0] = new File(base + "/what");
-    files[1] = new File(base + "/what/romans.txt");
-    files[2] = new File(base + "/what/greek.txt");
-    files[3] = new File(base + "/what/who");
-    files[4] = new File(base + "/what/who/pericles.txt");
-    files[5] = new File(base + "/what/who/cato.txt");
-    files[6] = new File(base + "/what/when");
-    files[7] = new File(base + "/what/when/BCE.txt");
-    files[8] = new File(base + "/what/when/CE.txt");
+    files[0] = new File(base + "/src");
+    files[1] = new File(base + "/src/main");
+    files[2] = new File(base + "/src/main/java/io/palsson/exercises");
+    files[3] = new File(base + "/src/main/java/io/palsson/exercises/Chapter1.java");
+    files[4] = new File(base + "/src/main/java/io/palsson/exercises/Chapter2.java");
+    files[5] = new File(base + "/src/test");
+    files[6] = new File(base + "/src/test/java/io/palsson/exercises");
+    files[7] = new File(base + "/src/test/java/io/palsson/exercises/Chapter1Test.java");
+    files[8] = new File(base + "/src/test/java/io/palsson/exercises/Chapter2Test.java");
 
     // We could have converted the array to a list and used the sort() method defined on the list
     // interface.
@@ -66,7 +69,7 @@ class Chapter1 {
     Arrays.sort(files, comparator);
 
     for (File f : files) {
-      System.out.println(f);
+      out.println(f);
     }
   }
 
@@ -81,7 +84,7 @@ class Chapter1 {
     li.add("Baseball");
     li.add("Football");
 
-    li.forEachIf(System.out::println, e -> e.startsWith("B"));
+    li.forEachIf(out::println, e -> e.startsWith("B"));
   }
 
   /**
@@ -110,7 +113,6 @@ class Chapter1 {
     // A custom object implements the Collection interface and a custom interface that has a method with the same
     // signature as the stream() method of the Collection interface.
 
-    // Binary compatibility
-    // Don't know.
+    // TODO Binary compatibility
   }
 }

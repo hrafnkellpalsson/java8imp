@@ -1,5 +1,10 @@
 package io.palsson.exercises;
 
-public class Chapter3Test {
+import org.junit.Test;
 
+public class Chapter3Test {
+  @Test
+  public void testEx1() {
+
+  }
 }

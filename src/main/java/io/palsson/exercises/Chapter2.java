@@ -3,6 +3,7 @@ package io.palsson.exercises;
 import com.google.common.base.Stopwatch;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
@@ -76,6 +77,7 @@ class Chapter2 {
         watch.elapsed(TimeUnit.MILLISECONDS));
 
     return count;
+
     // We don't want the threads to update a single counter because that would result in a race
     // condition.
   }
@@ -125,28 +127,30 @@ class Chapter2 {
     t1 = System.nanoTime();
     numWords = words.stream().filter(w -> w.length() >= longWordLength).count();
     t2 = System.nanoTime();
-    out.println("Time for single threaded operation: " + (t2 - t1) / nanoToMilli);
+    out.format("Time for single threaded operation: %.0fms\n", (t2 - t1) / nanoToMilli);
 
     t3 = System.nanoTime();
     numWords = words.stream().parallel().filter(w -> w.length() >= longWordLength).count();
     t4 = System.nanoTime();
-    out.println("Time for parallel operation: " + (t4 - t3) / nanoToMilli);
+    out.format("Time for parallel operation: %.0fms\n", (t4 - t3) / nanoToMilli);
   }
 
   /**
    * Suppose you have an array int[] values = { 1, 4, 9, 16 }. What is Stream.of(values)? How do you
-   * getSync a stream of int instead?
+   * get a stream of int instead?
    */
   static void ex4() {
     int[] values = {1, 4, 9, 16};
     Stream<Object> objStream = Stream.of(values);
-    IntStream intStream = IntStream
-        .of(values); // Naturally IntStream is not a generic interface, since if applies only to ints!
+    IntStream intStream = IntStream.of(values);
   }
 
   /**
    * Using Stream.iterate, make an infinite stream of random numbers - not by calling Math.random
-   * but by directly implementing a linear congruential generator...
+   * but by directly implementing a linear congruential generator. In such a generator, you start
+   * with x_0 = seed and then produce x_n+1 = (a * x_n + c) % m, for appropriate values of , c,
+   * and m. You should implement a method with parameters a, c, m, and seed that yields a
+   * Stream<Long>. Try out a = 25214903917, c = 11, and m = 2 ^ 48.
    */
   static void ex5() {
     long seed = 8;
@@ -162,7 +166,7 @@ class Chapter2 {
    * one-liner instead.
    */
   static void ex6() {
-    String s = "drumpf";
+    String s = "montypython";
     Stream<Character> stream;
 
     // Clumsy implementation from book.
@@ -171,14 +175,18 @@ class Chapter2 {
       result.add(c);
     }
     stream = result.stream();
-    stream.forEach(out::println);
+    stream.forEach(c -> out.format(" %s", c));
+    out.println();
 
     // Better implementation.
-    stream = IntStream.range(0, s.length() - 1).map(s::charAt).mapToObj(c -> (char) c);
-    stream.forEach(out::println);
-    // Even better
+    stream = IntStream.range(0, s.length()).map(s::charAt).mapToObj(c -> (char) c);
+    stream.forEach(c -> out.format(" %s", c));
+    out.println();
+
+    // Even better.
     stream = s.chars().mapToObj(c -> (char) c);
-    stream.forEach(out::println);
+    stream.forEach(c -> out.format(" %s", c));
+    out.println();
   }
 
   /**
@@ -187,7 +195,9 @@ class Chapter2 {
    */
   static void ex7() {
     // This is not a good idea because the method will never return if the stream is infinite.
-    boolean isFinite = isFinite(Stream.generate(() -> "a"));
+    // So a test running this method would never return - hence, no test for this method :)
+    Stream<Character> infiniteStream = Stream.generate(() -> 'a');
+    boolean isFinite = isFinite(infiniteStream);
   }
 
   private static <T> boolean isFinite(Stream<T> stream) {
@@ -202,7 +212,10 @@ class Chapter2 {
    */
   static void ex8() {
     // If we allow one or both streams to be infinite this seems to be somewhat involved.
-    // We could copy implementation from potonpack library, see http://stackoverflow.com/a/25668784/1728563
+    // We could copy implementation from protonpack library,
+    // see http://stackoverflow.com/a/25668784/1728563
+    // TODO Implement version for finite streams.
+    throw new UnsupportedOperationException();
   }
 
   /**
@@ -244,8 +257,8 @@ class Chapter2 {
     out.println("Solution 2");
     listDates2.forEach(out::println);
 
-    // Solution 3 - The combiner function isn't needed here because the argument types are the same as the result
-    // types. But we can use it nevertheless.
+    // Solution 3 - The combiner function isn't needed here because the argument types are the same
+    // as the result types. But we can use it nevertheless.
     Stream<ArrayList<LocalDate>> streamDates3 = Stream.of(janDates, febDates, marDates);
     ArrayList<LocalDate> listDates3 = streamDates3
         .reduce(new ArrayList<>(Collections.emptyList()), (x, y) -> {
@@ -259,7 +272,8 @@ class Chapter2 {
     // listDates3.forEach(out::println);
   }
 
-  // Now let's do the generic version, using only the best way, i.e. Solution 2, from the simplified example above.
+  // Now let's do the generic version, using only the best way, i.e. Solution 2, from the simplified
+  // example above.
   static <T> ArrayList<T> ex9_2(Stream<ArrayList<T>> stream) {
     return stream.reduce(new ArrayList<>(Collections.emptyList()), (x, y) -> {
       x.addAll(y);
@@ -267,24 +281,21 @@ class Chapter2 {
     });
   }
 
-  // TODO We could try more stuff here, such as not using an immutable Averager.
-  // The solution was stolen from here http://stackoverflow.com/questions/23658956/finding-average-using-reduce-and-collect
+  // The solution was stolen from here
+  // http://stackoverflow.com/questions/23658956/finding-average-using-reduce-and-collect
 
   /**
    * Write a call to reduce that can be used to compute the average of a Stream<Double>. Why can't
    * you simply compute the sum and divide by count()?
    */
   static void ex10() {
-    // Firstly, remember that for a DoubleStream there is an average() method, but that method is only available for
-    // primitive streams (as are sum(), max(), min() and summaryStatistics()).
+    // First, remember that for a DoubleStream there is an average() method, but that method is
+    // only available for primitive streams (as are sum(), max(), min() and summaryStatistics()).
 
     // So we could cheat and not use reduce()
     Stream<Double> stream1 = DoubleStream.of(1, 2, 3, 4, 5).boxed();
-    // DoubleStream dStream  = stream1.mapToDouble(d -> d);
-    // OptionalDouble optAv = dStream.average();
-    // Or as a one liner with an identity
     Double av1 = stream1.mapToDouble(d -> d).average().orElse(0);
-    out.println("Cheating: " + av1);
+    out.println("By cheating we found the average: " + av1);
 
     // Now no cheating, let's use reduce() as requested.
     // We can't simply compute the sum and divide by count() because we can't consume the stream
@@ -292,10 +303,10 @@ class Chapter2 {
     // reduced stream gets reduced to a single value, but nevertheless it's not the last operation
     // in our calculations.
     Stream<Double> stream2 = DoubleStream.of(1, 2, 3, 4, 5).boxed();
-    double av2 = stream2.reduce(new ImmutableAverager(0D, 0), ImmutableAverager::accumulator,
-        ImmutableAverager::combiner)
+    double av2 = stream2.reduce(new ImmutableAverager(0D, 0),
+        ImmutableAverager::accumulator, ImmutableAverager::combiner)
         .average();
-    out.println("Not cheating: " + av2);
+    out.println("Not cheating we found the average: " + av2);
   }
 }
 
