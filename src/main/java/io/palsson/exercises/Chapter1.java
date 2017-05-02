@@ -1,7 +1,10 @@
 package io.palsson.exercises;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.PrintStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -17,9 +20,9 @@ import java.util.stream.Stream;
 class Chapter1 {
   private final static PrintStream out = System.out;
 
-  /**
-   * Is the comparator code in the Arrays.sort method called in the same thread as the call to
-   * sort or a different thread?
+  /*
+  Is the comparator code in the Arrays.sort method called in the same thread as the call to
+  sort or a different thread?
    */
   private static Set<Long> ex1Helper(BiConsumer<String[], Comparator<String>> consumer) {
     Set<Long> threadIds = new CopyOnWriteArraySet<>();
@@ -47,10 +50,10 @@ class Chapter1 {
     return ex1Helper(consumer);
   }
 
-  /**
-   * Using the listFiles(FileFilter) and isDirectory methods of the java.io.File class, write a
-   * method that returns all subdirectories of a given directory. Use a lambda expression instead of
-   * a FileFilter object. Repeat with a method reference.
+  /*
+  Using the listFiles(FileFilter) and isDirectory methods of the java.io.File class, write a
+  method that returns all subdirectories of a given directory. Use a lambda expression instead of
+  a FileFilter object. Repeat with a method reference.
    */
   static List<File> ex2() {
     // Recursive lambdas are not supported, so that's not an option.
@@ -70,19 +73,24 @@ class Chapter1 {
     }
   }
 
-  /**
-   * Using the list(FilenameFilter) method of the java.io.File cass, write a method that return all
-   * files in a given directory with a given extension. Use a lambda expression, not a
-   * FilenameFilter. Which variables from the enclosing scope does it capture?
+  /*
+  Using the list(FilenameFilter) method of the java.io.File cass, write a method that return all
+  files in a given directory with a given extension. Use a lambda expression, not a
+  FilenameFilter. Which variables from the enclosing scope does it capture?
    */
-  static void ex3() {
-    
+  static File[] ex3(String suffix) {
+    File file = new File(".");
+    FilenameFilter filter = (dir, name) -> {
+      boolean isFile = !Paths.get(dir.getName(), name).toFile().isDirectory();
+      return name.endsWith(suffix) && isFile;
+    };
+    return file.listFiles(filter);
   }
 
-  /**
-   * Given an array of File objects, sort it so that the directories come before the files, and
-   * within each group, elements are sorted by path name. Use a lambda expression, not a
-   * Comparator.
+  /*
+  Given an array of File objects, sort it so that the directories come before the files, and
+  within each group, elements are sorted by path name. Use a lambda expression, not a
+  Comparator.
    */
   static void ex4(File[] files) {
     // We could have converted the array to a list and used the sort() method defined on the list
@@ -112,10 +120,34 @@ class Chapter1 {
     }
   }
 
-  /**
-   * Form a sub-interface Collection2 from Collection and add a default method void
-   * forEachIf(Consumer<T> action, Predicate<T> filter) that applies action to each element for
-   * which filter returns true. How could you use it?
+  /*
+  Take a file from one of your projects that contains a number of ActionListener, Runnable, or
+  the like. Replace them with lambda expressions. How many lines did it save? Was the code easier
+  to read? Were you able to use method references?
+   */
+  static void ex5() {
+    // I can haz cheezburger?
+  }
+
+  /*
+  Didn't you always hate it that you had to deal with checked exceptions in a Runnable? Write a
+  method uncheck that catches all checked exceptions and turns them into unchecked exceptions.
+  For example,
+  new Thread(uncheck(
+    () -> { System.out.println("Zzz"); Thread.sleep(1000); })).start();
+      // Look, no catch (InterruptedException)!
+  Hint: Define an interface RunnableEx whose run method may throw any exceptions. Then implement
+  public static Runnable uncheck(RunnableEx runner). Use a lambda expression inside the uncheck
+  method.
+   */
+  public static void ex6() {
+
+  }
+
+  /*
+  Form a sub-interface Collection2 from Collection and add a default method void
+  forEachIf(Consumer<T> action, Predicate<T> filter) that applies action to each element for
+  which filter returns true. How could you use it?
    */
   static void ex9() {
     Collection2<String> li = new ArrayList2<>();
@@ -126,9 +158,9 @@ class Chapter1 {
     li.forEachIf(out::println, e -> e.startsWith("B"));
   }
 
-  /**
-   * Go through the method of the Collections class. If you were king for a day, into which
-   * interface would you place each method? Would it be a default method or a static method?
+  /*
+  Go through the method of the Collections class. If you were king for a day, into which
+  interface would you place each method? Would it be a default method or a static method?
    */
   static void ex10() {
     // Factory methods would be static methods on a given interface. Example:
@@ -140,12 +172,12 @@ class Chapter1 {
     // default void shuffle(List<?> list)
   }
 
-  /**
-   * In the past, you were told that it's bad form to add method to an interface because it would
-   * break existing code. Now you are told that it's okay to add new methods, provided you also
-   * supply a default implementation. How safe is that? Describe a scenario where the new stream
-   * method of the Collection interface causes legacy code to fail compilation. What about binary
-   * compatibility? Will legacy code from a JAR file still run?
+  /*
+  In the past, you were told that it's bad form to add method to an interface because it would
+  break existing code. Now you are told that it's okay to add new methods, provided you also
+  supply a default implementation. How safe is that? Describe a scenario where the new stream
+  method of the Collection interface causes legacy code to fail compilation. What about binary
+  compatibility? Will legacy code from a JAR file still run?
    */
   static void ex12() {
     // A case where legacy code would fail compilation:

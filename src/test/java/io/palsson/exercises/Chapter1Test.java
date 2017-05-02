@@ -2,6 +2,7 @@ package io.palsson.exercises;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.List;
 import static org.junit.Assert.*;
 
@@ -34,7 +35,17 @@ public class Chapter1Test {
 
   @Test
   public void testEx3() {
+    String suffix = ".gradle";
 
+    File[] expected = new File[] {
+        new File("./build.gradle"),
+        new File("./settings.gradle")
+    };
+
+    File[] actual = Chapter1.ex3(suffix);
+    Arrays.stream(actual).forEach(out::println);
+
+    assertArrayEquals(expected, actual);
   }
 
   @Test

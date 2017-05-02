@@ -25,11 +25,11 @@ import java.util.stream.Stream;
 class Chapter2 {
   private final static PrintStream out = System.out;
 
-  /**
-   * Write a parallel version of the for loop in Section 2.1, "From Iteration to Stream Operations,"
-   * on page 22. Obtain the number of processors. Make that many separate threads, each working on a
-   * segment of the list, and total up the results as they come in. (You don't want the threads to
-   * update a single counter. Why?)
+  /*
+  Write a parallel version of the for loop in Section 2.1, "From Iteration to Stream Operations,"
+  on page 22. Obtain the number of processors. Make that many separate threads, each working on a
+  segment of the list, and total up the results as they come in. (You don't want the threads to
+  update a single counter. Why?)
    */
   static long ex1(String fileName) throws InterruptedException, ExecutionException {
     final int longWordLength = 13;
@@ -94,9 +94,10 @@ class Chapter2 {
 
     return count;
   }
-  /**
-   * Verify that asking for the first five long words does not call the filter method once the fifth
-   * long word has been found. Simply log each method call.
+
+  /*
+  Verify that asking for the first five long words does not call the filter method once the fifth
+  long word has been found. Simply log each method call.
    */
   static void ex2() {
     final int longWordLength = 6;
@@ -109,10 +110,10 @@ class Chapter2 {
         .collect(Collectors.toList());
   }
 
-  /**
-   * Measure the difference when counting long words with a parallelStream instead of a stream. Call
-   * System.nanoTime before and after the call, and print the difference. Switch to a larger
-   * document (such as War and Peace) if you have a fast computer.
+  /*
+  Measure the difference when counting long words with a parallelStream instead of a stream. Call
+  System.nanoTime before and after the call, and print the difference. Switch to a larger
+  document (such as War and Peace) if you have a fast computer.
    */
   static void ex3() throws IOException {
     List<String> words = Helper.getBookWords("warAndPeace.txt");
@@ -132,9 +133,9 @@ class Chapter2 {
     out.format("Time for parallel operation: %.0fms\n", (t4 - t3) / nanoToMilli);
   }
 
-  /**
-   * Suppose you have an array int[] values = { 1, 4, 9, 16 }. What is Stream.of(values)? How do you
-   * get a stream of int instead?
+  /*
+  Suppose you have an array int[] values = { 1, 4, 9, 16 }. What is Stream.of(values)? How do you
+  get a stream of int instead?
    */
   static void ex4() {
     int[] values = {1, 4, 9, 16};
@@ -142,12 +143,12 @@ class Chapter2 {
     IntStream intStream = IntStream.of(values);
   }
 
-  /**
-   * Using Stream.iterate, make an infinite stream of random numbers - not by calling Math.random
-   * but by directly implementing a linear congruential generator. In such a generator, you start
-   * with x_0 = seed and then produce x_n+1 = (a * x_n + c) % m, for appropriate values of , c,
-   * and m. You should implement a method with parameters a, c, m, and seed that yields a
-   * Stream<Long>. Try out a = 25214903917, c = 11, and m = 2 ^ 48.
+  /*
+  Using Stream.iterate, make an infinite stream of random numbers - not by calling Math.random
+  but by directly implementing a linear congruential generator. In such a generator, you start
+  with x_0 = seed and then produce x_n+1 = (a * x_n + c) % m, for appropriate values of , c,
+  and m. You should implement a method with parameters a, c, m, and seed that yields a
+  Stream<Long>. Try out a = 25214903917, c = 11, and m = 2 ^ 48.
    */
   static void ex5() {
     long seed = 8;
@@ -158,9 +159,9 @@ class Chapter2 {
     stream.limit(5).forEach(out::println);
   }
 
-  /**
-   * The characterStream method in Section 2.3 on page 25 was a bit clumsy. Write a stream-based
-   * one-liner instead.
+  /*
+  The characterStream method in Section 2.3 on page 25 was a bit clumsy. Write a stream-based
+  one-liner instead.
    */
   static void ex6() {
     String s = "montypython";
@@ -186,9 +187,9 @@ class Chapter2 {
     out.println();
   }
 
-  /**
-   * Your manager asks you to write a method public static <T> boolean isFinite(Steam<T> stream).
-   * Why isn't that such a good idea? Go ahead and write in anyway.
+  /*
+  Your manager asks you to write a method public static <T> boolean isFinite(Steam<T> stream).
+  Why isn't that such a good idea? Go ahead and write in anyway.
    */
   static void ex7() {
     // This is not a good idea because the method will never return if the stream is infinite.
@@ -202,10 +203,10 @@ class Chapter2 {
     return true;
   }
 
-  /**
-   * Write a method public static <T> Stream<T> zip(Stream<T> first, Stream<T> second) that
-   * alternates elements from the stream first and second, stopping when one of them runs out of
-   * elements.
+  /*
+  Write a method public static <T> Stream<T> zip(Stream<T> first, Stream<T> second) that
+  alternates elements from the stream first and second, stopping when one of them runs out of
+  elements.
    */
   static void ex8() {
     // If we allow one or both streams to be infinite this seems to be somewhat involved.
@@ -215,9 +216,9 @@ class Chapter2 {
     throw new UnsupportedOperationException();
   }
 
-  /**
-   * Join all elements in a Stream<ArrayList<T>> to one ArrayList<T>. Show how to do this with the
-   * three forms of reduce.
+  /*
+  Join all elements in a Stream<ArrayList<T>> to one ArrayList<T>. Show how to do this with the
+  three forms of reduce.
    */
   static void ex9_1() {
     // Let's first try a simple non generic implementation.
@@ -281,9 +282,9 @@ class Chapter2 {
   // The solution was stolen from here
   // http://stackoverflow.com/questions/23658956/finding-average-using-reduce-and-collect
 
-  /**
-   * Write a call to reduce that can be used to compute the average of a Stream<Double>. Why can't
-   * you simply compute the sum and divide by count()?
+  /*
+  Write a call to reduce that can be used to compute the average of a Stream<Double>. Why can't
+  you simply compute the sum and divide by count()?
    */
   static void ex10() {
     // First, remember that for a DoubleStream there is an average() method, but that method is
