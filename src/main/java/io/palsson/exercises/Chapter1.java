@@ -2,30 +2,81 @@ package io.palsson.exercises;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 class Chapter1 {
   private final static PrintStream out = System.out;
+
+  /**
+   * Is the comparator code in the Arrays.sort method called in the same thread as the call to
+   * sort or a different thread?
+   */
+  private static Set<Long> ex1Helper(BiConsumer<String[], Comparator<String>> consumer) {
+    Set<Long> threadIds = new CopyOnWriteArraySet<>();
+    long mainId = Thread.currentThread().getId();
+    threadIds.add(mainId);
+
+    String[] sample = Helper.getBookWords("alice.txt").toArray(new String[0]);
+    Comparator<String> comparator = (i, j) -> {
+      long lambdaId = Thread.currentThread().getId();
+      threadIds.add(lambdaId);
+      return i.compareTo(j);
+    };
+    consumer.accept(sample, comparator);
+
+    return threadIds;
+  }
+
+  static Set<Long> ex1Sort() {
+    BiConsumer<String[], Comparator<String>> consumer = Arrays::sort;
+    return ex1Helper(consumer);
+  }
+
+  static Set<Long> ex1ParallelSort() {
+    BiConsumer<String[], Comparator<String>> consumer = Arrays::parallelSort;
+    return ex1Helper(consumer);
+  }
 
   /**
    * Using the listFiles(FileFilter) and isDirectory methods of the java.io.File class, write a
    * method that returns all subdirectories of a given directory. Use a lambda expression instead of
    * a FileFilter object. Repeat with a method reference.
    */
-  static void ex2() {
+  static List<File> ex2() {
     // Recursive lambdas are not supported, so that's not an option.
     File file = new File("./src");
-    go(file);
+    List<File> allDirs = new ArrayList<>();
+    go(file, allDirs);
+    return allDirs;
   }
 
-  private static void go(File file) {
+  private static void go(File file, List<File> allDirs) {
     // File[] dirs = file.listFiles(f -> f.isDirectory()); // Using a lambda expression
     File[] dirs = file.listFiles(File::isDirectory); // Using a method reference
     for (File dir : dirs) {
-      out.println(dir);
-      go(dir);
+      // out.println(dir);
+      allDirs.add(dir);
+      go(dir, allDirs);
     }
+  }
+
+  /**
+   * Using the list(FilenameFilter) method of the java.io.File cass, write a method that return all
+   * files in a given directory with a given extension. Use a lambda expression, not a
+   * FilenameFilter. Which variables from the enclosing scope does it capture?
+   */
+  static void ex3() {
+    
   }
 
   /**
@@ -33,19 +84,7 @@ class Chapter1 {
    * within each group, elements are sorted by path name. Use a lambda expression, not a
    * Comparator.
    */
-  static void ex4() {
-    final String base = ".";
-    File[] files = new File[9];
-    files[0] = new File(base + "/src");
-    files[1] = new File(base + "/src/main");
-    files[2] = new File(base + "/src/main/java/io/palsson/exercises");
-    files[3] = new File(base + "/src/main/java/io/palsson/exercises/Chapter1.java");
-    files[4] = new File(base + "/src/main/java/io/palsson/exercises/Chapter2.java");
-    files[5] = new File(base + "/src/test");
-    files[6] = new File(base + "/src/test/java/io/palsson/exercises");
-    files[7] = new File(base + "/src/test/java/io/palsson/exercises/Chapter1Test.java");
-    files[8] = new File(base + "/src/test/java/io/palsson/exercises/Chapter2Test.java");
-
+  static void ex4(File[] files) {
     // We could have converted the array to a list and used the sort() method defined on the list
     // interface.
     // List<File> fs = Arrays.asList(files);
@@ -69,7 +108,7 @@ class Chapter1 {
     Arrays.sort(files, comparator);
 
     for (File f : files) {
-      out.println(f);
+      // out.println(f);
     }
   }
 
