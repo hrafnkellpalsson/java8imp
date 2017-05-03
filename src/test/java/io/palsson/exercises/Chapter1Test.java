@@ -88,7 +88,37 @@ public class Chapter1Test {
   }
 
   @Test
+  public void testEx6() throws InterruptedException {
+    Chapter1.ex6();
+  }
+
+  @Test
+  public void testEx6Pre() throws InterruptedException {
+    Chapter1.ex6Pre();
+  }
+
+  @Test
+  public void testEx7() throws InterruptedException {
+    Chapter1.ex7();
+  }
+
+  @Test
+  public void testEx8Pre1() throws InterruptedException {
+    Chapter1.ex8Pre1();
+  }
+
+  @Test
+  public void testEx8Pre2() throws InterruptedException {
+    Chapter1.ex8Pre2();
+  }
+
+  @Test
   public void testEx9() {
     Chapter1.ex9();
+  }
+
+  @Test
+  public void testEx11Interfaces() {
+    Chapter1.ex11Interfaces();
   }
 }
