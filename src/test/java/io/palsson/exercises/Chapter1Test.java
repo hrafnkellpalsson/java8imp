@@ -121,4 +121,9 @@ public class Chapter1Test {
   public void testEx11Interfaces() {
     Chapter1.ex11Interfaces();
   }
+
+  @Test
+  public void testEx11SuperclassAndInterface() {
+    Chapter1.ex11SuperclassAndInterface();
+  }
 }

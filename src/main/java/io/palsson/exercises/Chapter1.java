@@ -7,15 +7,19 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -148,12 +152,11 @@ class Chapter1 {
 
     ExecutorService executor = Executors.newSingleThreadExecutor();
     executor.execute(r);
-
-    // Sleep to allow ExecutorService thread to finish before current thread returns from method.
-    Thread.sleep(200);
+    executor.shutdown();
+    executor.awaitTermination(2, TimeUnit.SECONDS);
   }
 
-  static Runnable uncheck(RunnableEx runner) {
+  private static Runnable uncheck(RunnableEx runner) {
     Runnable r = () -> {
       try {
         runner.run();
@@ -191,9 +194,8 @@ class Chapter1 {
 
     executor.execute(runnerNoChecked);
     executor.execute(runnerWithChecked);
-
-    // Sleep to allow ExecutorService thread to finish before current thread returns from method.
-    Thread.sleep(200);
+    executor.shutdown();
+    executor.awaitTermination(2, TimeUnit.SECONDS);
   }
 
   /*
@@ -208,11 +210,11 @@ class Chapter1 {
 
     ExecutorService executor = Executors.newSingleThreadExecutor();
     executor.execute(combined);
-
-    // Sleep to allow ExecutorService thread to finish before current thread returns from method.
-    Thread.sleep(200);
+    executor.shutdown();
+    executor.awaitTermination(2, TimeUnit.SECONDS);
   }
 
+  // A poor substitution for the thenApply method on CompletableFuture.
   private static Runnable andThen(Runnable first, Runnable second) {
     return () -> {
       first.run();
@@ -257,8 +259,8 @@ class Chapter1 {
       executor.execute(runner);
     }
 
-    // Sleep to allow ExecutorService thread to finish before current thread returns from method.
-    Thread.sleep(200);
+    executor.shutdown();
+    executor.awaitTermination(2, TimeUnit.SECONDS);
   }
 
   static void ex8Pre2() throws InterruptedException {
@@ -274,8 +276,8 @@ class Chapter1 {
       executor.execute(runner);
     }
 
-    // Sleep to allow ExecutorService thread to finish before current thread returns from method.
-    Thread.sleep(200);
+    executor.shutdown();
+    executor.awaitTermination(2, TimeUnit.SECONDS);
   }
 
   /*
@@ -314,15 +316,18 @@ class Chapter1 {
   implements an interface I, each of which has a method void f().
    */
   static void ex11() {
-    // See method ex11Interface and ex11InterfaceAndSuperclass
+    // See method ex11Interface and ex11SuperclassAndInterface
   }
 
   static void ex11Interfaces() {
     class Inheritor implements I, J {
+      // It's ok that abstract method f is defined in both interfaces. Being an abstract method,
+      // of course we still have to implement it.
       public void f() {
         System.out.println("I'm method f on Inheritor");
       }
 
+      // When both interfaces have a default g method we have to explicitly resolve the conflict.
       public void g() {
         System.out.println("I'm method g on Inheritor");
         I.super.g();
@@ -352,18 +357,29 @@ class Chapter1 {
     J.h();
   }
 
-  static void ex11InterfaceAndSuperclass() {
+  static void ex11SuperclassAndInterface() {
     class Inheritor extends S implements I {
-
-
-
+      // We don't even have to implement abstract method f from interface I because it's a method
+      // on the superclass S and that takes precedence.
     }
 
     I inheritorI = new Inheritor();
     inheritorI.f();
     inheritorI.g();
+    // We can't call method h since we've declared the type to by I.
     out.println();
 
+    S inheritorS = new Inheritor();
+    inheritorS.f();
+    inheritorS.g();
+    inheritorS.h();
+    out.println();
+
+    Inheritor inheritor = new Inheritor();
+    inheritor.f();
+    inheritor.g();
+    inheritor.h();
+    out.println();
   }
 
   /*
@@ -375,9 +391,26 @@ class Chapter1 {
    */
   static void ex12() {
     // A case where legacy code would fail compilation:
-    // A custom object implements the Collection interface and a custom interface that has a method with the same
-    // signature as the stream() method of the Collection interface.
+    // A custom object implements extends AbstractCollection and implements interface that has a
+    // method stream() with no parameters (the same as in the new Collection interface).
+    // The incompatible return type causes the compilation failure.
+    // Example:
+//    class FailsToCompile extends AbstractCollection implements K {
+//      @Override
+//      public Iterator iterator() {
+//        return null;
+//      }
+//
+//      @Override
+//      public int size() {
+//        return 0;
+//      }
+//
+//      @Override
+//      public void stream() { System.out.println("I'm method stream on FailsToCompile"); }
+//    }
 
-    // TODO Binary compatibility
+    // Binary compatibility
+    // See https://wiki.eclipse.org/Evolving_Java-based_APIs_2
   }
 }
