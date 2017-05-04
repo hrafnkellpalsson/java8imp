@@ -1,4 +1,4 @@
-package io.palsson.exercises;
+package io.palsson.exercises.chapter2;
 
 import java.io.IOException;
 import java.io.PrintStream;

@@ -1,4 +1,4 @@
-package io.palsson.exercises;
+package io.palsson.exercises.chapter3;
 
 class Chapter3 {
   /*

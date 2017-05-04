@@ -1,6 +1,7 @@
-package io.palsson.exercises;
+package io.palsson.exercises.chapter2;
 
 import com.google.common.base.Stopwatch;
+import io.palsson.exercises.Helper;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.time.LocalDate;

@@ -1,4 +1,4 @@
-package io.palsson.exercises;
+package io.palsson.exercises.chapter1;
 
 public interface I {
   void f();

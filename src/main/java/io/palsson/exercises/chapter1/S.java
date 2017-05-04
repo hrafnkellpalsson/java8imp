@@ -1,4 +1,4 @@
-package io.palsson.exercises;
+package io.palsson.exercises.chapter1;
 
 public class S {
   public void f() { // TODO Use protected?
